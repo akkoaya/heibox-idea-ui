@@ -146,6 +146,20 @@ margin: 0 0 8px; padding: 4px 10px;
       background: rgba(51,112,255,0.06);
       border-radius: 0 6px 6px 0;
 }
+.im-msg-bubble a[data-clicks]::after {
+      content: attr(data-clicks);
+      display: inline-block;
+      margin-left: 4px;
+      padding: 1px 5px;
+      font-size: 10px;
+      line-height: 1.3;
+      color: var(--im-text-2);
+      background: var(--im-border);
+      border-radius: 4px;
+      vertical-align: middle;
+      font-weight: 500;
+}
+.im-msg-bubble a[data-clicks="0"]::after { display: none; }
 
 .im-msg-meta {
 font-size: 11px; color: var(--im-text-3);

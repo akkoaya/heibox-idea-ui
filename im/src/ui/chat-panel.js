@@ -613,6 +613,31 @@ function cookedWithQuoteBars(post) {
   }
 }
 
+/** 把 post.link_counts 的点击数注入到 cooked HTML 的对应 <a> 上，加 data-clicks 属性 */
+function injectLinkCounts(cooked, linkCounts) {
+  if (!cooked || !linkCounts || !linkCounts.length) return cooked;
+  try {
+    const clickMap = new Map();
+    for (const l of linkCounts) {
+      if (l.url && typeof l.clicks === "number") clickMap.set(l.url, l.clicks);
+    }
+    if (!clickMap.size) return cooked;
+    const doc = new DOMParser().parseFromString(cooked, "text/html");
+    let changed = false;
+    for (const a of doc.body.querySelectorAll("a[href]")) {
+      const href = a.getAttribute("href");
+      const clicks = clickMap.get(href);
+      if (clicks != null && !a.hasAttribute("data-clicks")) {
+        a.setAttribute("data-clicks", String(clicks));
+        changed = true;
+      }
+    }
+    return changed ? doc.body.innerHTML : cooked;
+  } catch {
+    return cooked;
+  }
+}
+
 /** 引用条点击展开/收起全文：cooked 转换条已内嵌 .im-quote-full；
  *  回复型条（bubbleHtml）无内嵌全文，从已加载的原楼 cooked 动态取 */
 function toggleQuoteExpand(bar) {
@@ -667,6 +692,10 @@ function bubbleHtml(post, myName) {
   const me = isMyPost(post, myName);
   const side = me ? "me" : "other";
   const displayName = userDisplayName(post, post.username || "?");
+  // 预处理 cooked：注入链接点击数 data-clicks
+  if (post.link_counts?.length) {
+    post.cooked = injectLinkCounts(post.cooked, post.link_counts);
+  }
 
   let quoteHtml = "";
   if (post.reply_to_post_number) {

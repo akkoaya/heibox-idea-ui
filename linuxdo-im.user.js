@@ -3055,6 +3055,20 @@ margin: 0 0 8px; padding: 4px 10px;
       background: rgba(51,112,255,0.06);
       border-radius: 0 6px 6px 0;
 }
+.im-msg-bubble a[data-clicks]::after {
+      content: attr(data-clicks);
+      display: inline-block;
+      margin-left: 4px;
+      padding: 1px 5px;
+      font-size: 10px;
+      line-height: 1.3;
+      color: var(--im-text-2);
+      background: var(--im-border);
+      border-radius: 4px;
+      vertical-align: middle;
+      font-weight: 500;
+}
+.im-msg-bubble a[data-clicks="0"]::after { display: none; }
 
 .im-msg-meta {
 font-size: 11px; color: var(--im-text-3);
@@ -9551,6 +9565,29 @@ html.im-theme {
       return cooked;
     }
   }
+  function injectLinkCounts(cooked, linkCounts) {
+    if (!cooked || !linkCounts || !linkCounts.length) return cooked;
+    try {
+      const clickMap = /* @__PURE__ */ new Map();
+      for (const l of linkCounts) {
+        if (l.url && typeof l.clicks === "number") clickMap.set(l.url, l.clicks);
+      }
+      if (!clickMap.size) return cooked;
+      const doc = new DOMParser().parseFromString(cooked, "text/html");
+      let changed = false;
+      for (const a of doc.body.querySelectorAll("a[href]")) {
+        const href = a.getAttribute("href");
+        const clicks = clickMap.get(href);
+        if (clicks != null && !a.hasAttribute("data-clicks")) {
+          a.setAttribute("data-clicks", String(clicks));
+          changed = true;
+        }
+      }
+      return changed ? doc.body.innerHTML : cooked;
+    } catch {
+      return cooked;
+    }
+  }
   function toggleQuoteExpand(bar) {
     var _a2;
     let full = bar.querySelector(".im-quote-full");
@@ -9598,10 +9635,13 @@ html.im-theme {
     (_c = chatHooks.toast) == null ? void 0 : _c.call(chatHooks, "该楼层不支持此操作", trigger);
   }
   function bubbleHtml(post, myName) {
-    var _a2, _b2;
+    var _a2, _b2, _c;
     const me = isMyPost(post, myName);
     const side = me ? "me" : "other";
     const displayName = userDisplayName(post, post.username || "?");
+    if ((_a2 = post.link_counts) == null ? void 0 : _a2.length) {
+      post.cooked = injectLinkCounts(post.cooked, post.link_counts);
+    }
     let quoteHtml = "";
     if (post.reply_to_post_number) {
       const target = topicPostsMap.get(post.reply_to_post_number);
@@ -9627,7 +9667,7 @@ html.im-theme {
     let avatar;
     let avatarBg = avatarColor(displayName);
     if (isMaskAvatar()) {
-      const d = (_a2 = skinHooks.msgAvatar) == null ? void 0 : _a2.call(skinHooks, displayName);
+      const d = (_b2 = skinHooks.msgAvatar) == null ? void 0 : _b2.call(skinHooks, displayName);
       if (d) {
         avatar = d.html;
         avatarBg = d.bg;
@@ -9653,7 +9693,7 @@ html.im-theme {
       <span class="im-like-icon">${isLiked ? ICONS.heartFilled : ICONS.heartOutline}</span>
       <span class="im-like-count">${likeCount > 0 ? likeCount : ""}</span>
     </span>`;
-    const boostBar = ((_b2 = chatHooks.renderBoosts) == null ? void 0 : _b2.call(chatHooks, post)) || "";
+    const boostBar = ((_c = chatHooks.renderBoosts) == null ? void 0 : _c.call(chatHooks, post)) || "";
     const deviceHtml = post.via_device ? `<span class="im-msg-device" title="${escapeHtml(post.via_device)}">${ICONS.phone}<span>${escapeHtml(post.via_device)}</span></span>` : "";
     return `
     <div class="im-msg im-msg-${side}" data-post-number="${post.post_number}"${post.id ? ` data-post-id="${post.id}"` : ""}${me ? ' data-mine="1"' : ""} data-username="${escapeHtml(post.username || "")}" data-bookmarked="${post.bookmarked ? "1" : "0"}">
