@@ -68,6 +68,8 @@ import {
 } from "./ui/chat-panel.js";
 import { resetRailToChat, activeRailKey } from "./ui/list-sources.js";
 export function run() {
+  // /pub/ 路径下页面结构特殊，不启动 IM 皮肤，避免卡死
+  if (/^\/pub\//.test(location.pathname)) return;
   migratePrefs();
   onColorThemeChange(syncDarkModeToggle);
   onRailRefresh(syncRail);
