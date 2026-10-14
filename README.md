@@ -1,6 +1,6 @@
-# 摸鱼办公皮肤合集 · Linux DO & X (Twitter) & 小红书
+# 摸鱼办公皮肤合集 · Linux DO & X (Twitter) & 小红书 & 小黑盒
 
-为 **Linux DO**、**X (Twitter)** 和 **小红书** 深度定制的办公界面伪装外观脚本，支持 **钉钉 PC 端**、**飞书 IM**、**企业微信 5.x**、**JetBrains IDE**、**终端 TUI** 等多种风格。只换皮，不碰数据——内容、链接、按钮与交互全部保留。
+为 **Linux DO**、**X (Twitter)**、**小红书** 和 **小黑盒** 深度定制的办公界面伪装外观脚本，支持 **钉钉 PC 端**、**飞书 IM**、**企业微信 5.x**、**JetBrains IDE**、**终端 TUI** 等多种风格。只换皮，不碰数据——内容、链接、按钮与交互全部保留。
 
 > ⚠️ 同一站点内的不同外观脚本**互斥**，同一时刻对同一网站只启用一个外观。
 
@@ -20,6 +20,9 @@
 
 ### 📕 小红书专区
 - [小红书专属：IM 三合一外观（`xhs-im.user.js`）](#小红书专属im-三合一外观xhs-imuserjs)
+
+### 🎮 小黑盒专区
+- [小黑盒专属：IM 三合一外观（`xhh-im.user.js`）](#小黑盒专属im-三合一外观xhh-imuserjs)
 
 ### ✨ 通用工具
 - [文章一键伪装（`doc-select.user.js` · 全网站通用）](#文章一键伪装doc-selectuserjs--全网站通用)
@@ -90,6 +93,24 @@ https://github.com/czm15053/linuxdo-idea-ui/raw/main/xhs/xhs-im.user.js
 ```
 
 完整功能说明与开发构建详见 [`xhs/README.md`](./xhs/README.md)。
+
+## 小黑盒专属：IM 三合一外观（`xhh-im.user.js`）
+
+为 [xiaoheihe.cn](https://xiaoheihe.cn/) 深度定制的办公 IM 伪装脚本。把小黑盒社区首页、话题、搜索、收藏与浏览历史伪装成 **钉钉 / 飞书 / 企业微信** 聊天界面，帖子以聊天气泡呈现，点击气泡从右侧抽出详情抽屉与多级评论树，点赞/收藏/关注/评论全部点击原生控件代理执行。功能对齐 linux.do IM 版：**⌘/Ctrl+K 弹出式全局搜索**、**低质内容（水贴）过滤与折叠**、**关键词常驻高亮**、**侧栏宽窄条收起**，另有触底自动加载与防窥脱敏。
+
+### 安装
+
+1. 安装 [Tampermonkey](https://www.tampermonkey.net/)（或 Violentmonkey）
+2. 打开 [`xhh/xhh-im.user.js`](./xhh/xhh-im.user.js)，点 **Raw** 后安装
+3. 访问 <https://xiaoheihe.cn/app/bbs/home> 自动生效（初次安装后请硬刷新一次）
+
+Raw 直链（仓库公开后可用）：
+
+```text
+https://github.com/akkoaya/heibox-idea-ui/raw/main/xhh/xhh-im.user.js
+```
+
+完整功能说明与开发构建详见 [`xhh/README.md`](./xhh/README.md)。
 
 ## 文章一键伪装（`doc-select.user.js` · 全网站通用）
 
